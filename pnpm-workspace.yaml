@@ -23,4 +23,5 @@ peerDependencyRules:
     vite: "*"
     vitest: "*"
 allowBuilds:
-  esbuild: set this to true or false
+  "@parcel/watcher": true
+  esbuild: true
