@@ -1,12 +1,15 @@
-FROM node:24-slim AS base
+FROM node:26-slim AS base
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
+
 RUN apt-get update \
   && apt-get install -y --no-install-recommends ca-certificates \
   && rm -rf /var/lib/apt/lists/*
-RUN corepack enable \
+
+RUN npm install -g corepack@latest \
+  && corepack enable \
   && corepack prepare pnpm@11.5.3 --activate
 
 WORKDIR /app
