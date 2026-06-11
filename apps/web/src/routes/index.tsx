@@ -5,7 +5,11 @@ import { createFileRoute } from "@tanstack/react-router";
 export const Route = createFileRoute("/")({ component: Home });
 
 function Home() {
-  const oneQuery = useQuery(orpc.select1.queryOptions());
+  const oneQuery = useQuery({
+    ...orpc.select1.queryOptions(),
+    enabled: typeof window !== "undefined",
+  });
+
   return (
     <div className="p-8">
       <h1 className="text-4xl font-bold">Welcome to TanStack Start</h1>

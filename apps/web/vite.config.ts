@@ -12,12 +12,22 @@ const config = defineConfig({
   resolve: { tsconfigPaths: true },
   plugins: [
     devtools(),
-    nitro({ config: { rollupConfig: { external: [/^@sentry\//] } } }),
-    tailwindcss(),
     tanstackStart(),
     viteReact(),
     babel({ presets: [reactCompilerPreset()] }),
+    tailwindcss(),
+    nitro({
+      config: {
+        externals: {
+          inline: ["@tanstack/react-start", "@tanstack/start-server-core"],
+        },
+        rollupConfig: { external: [/^@sentry\//] },
+      },
+    }),
   ],
+  environments: {
+    ssr: { build: { rollupOptions: { input: "./server.ts" } } },
+  },
 });
 
 export default config;
