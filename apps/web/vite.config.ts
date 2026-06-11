@@ -25,9 +25,6 @@ const config = defineConfig({
       },
     }),
   ],
-  environments: {
-    ssr: { build: { rollupOptions: { input: "./server.ts" } } },
-  },
 });
 
 export default config;
