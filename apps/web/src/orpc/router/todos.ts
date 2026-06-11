@@ -20,6 +20,11 @@ export const addTodo = os.input(z.object({ name: z.string() })).handler(({ input
 });
 
 export const select1 = os.handler(async () => {
-  const one = await db.execute(sql`SELECT 1`);
-  return { one };
+  try {
+    const one = await db.execute(sql`SELECT 1`);
+    return { one };
+  } catch (e) {
+    console.log("error querying database", e);
+    throw e;
+  }
 });
