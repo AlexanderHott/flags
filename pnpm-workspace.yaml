@@ -11,6 +11,7 @@ catalog:
   vite: npm:@voidzero-dev/vite-plus-core@latest
   vitest: npm:@voidzero-dev/vite-plus-test@latest
   vite-plus: latest
+  radix-ui: ^1.5.0
 overrides:
   vite: "catalog:"
   vitest: "catalog:"
@@ -21,3 +22,5 @@ peerDependencyRules:
   allowedVersions:
     vite: "*"
     vitest: "*"
+allowBuilds:
+  esbuild: set this to true or false
