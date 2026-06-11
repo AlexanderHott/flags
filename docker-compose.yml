@@ -10,7 +10,7 @@ services:
       PORT: 3000
       DATABASE_URL: ${DATABASE_URL:-postgresql://${POSTGRES_USER:-flags}:${POSTGRES_PASSWORD:-password}@postgres:5432/${POSTGRES_DB:-flags}}
     ports:
-      - "3000:3000"
+      - "3000"
     depends_on:
       postgres:
         condition: service_healthy
