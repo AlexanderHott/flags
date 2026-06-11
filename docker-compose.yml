@@ -11,6 +11,8 @@ services:
       DATABASE_URL: ${DATABASE_URL:-postgresql://${POSTGRES_USER:-flags}:${POSTGRES_PASSWORD:-password}@postgres:5432/${POSTGRES_DB:-flags}}
     ports:
       - "3000"
+    networks:
+      - app
     depends_on:
       postgres:
         condition: service_healthy
@@ -35,6 +37,10 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-flags}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      app:
+        aliases:
+          - postgres
     healthcheck:
       test: ["CMD-SHELL", 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
       interval: 1s
@@ -43,3 +49,6 @@ services:
 
 volumes:
   postgres_data:
+
+networks:
+  app:
