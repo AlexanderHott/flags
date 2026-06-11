@@ -8,7 +8,7 @@ services:
       NODE_ENV: production
       HOST: 0.0.0.0
       PORT: 3000
-      DATABASE_URL: ${DATABASE_URL:-postgresql://flags:change-me@postgres:5432/flags}
+      DATABASE_URL: ${DATABASE_URL:-postgresql://${POSTGRES_USER:-flags}:${POSTGRES_PASSWORD:-password}@postgres:5432/${POSTGRES_DB:-flags}}
     ports:
       - "3000:3000"
     depends_on:
@@ -30,7 +30,7 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-flags}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
       POSTGRES_DB: ${POSTGRES_DB:-flags}
     volumes:
       - postgres_data:/var/lib/postgresql/data
