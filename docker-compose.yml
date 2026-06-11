@@ -21,9 +21,10 @@ services:
           'node -e "fetch(''http://127.0.0.1:3000/'').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"',
         ]
       interval: 30s
-      timeout: 10s
+      timeout: 3s
       retries: 3
-      start_period: 30s
+      start_period: 10s
+      start_interval: 1s
 
   postgres:
     image: postgres:17-alpine
@@ -36,9 +37,9 @@ services:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      interval: 1s
+      timeout: 3s
+      retries: 30
 
 volumes:
   postgres_data:
