@@ -1,5 +1,7 @@
 import { os } from "@orpc/server";
 import * as z from "zod";
+import { db } from "#/db/index";
+import { sql } from "drizzle-orm";
 
 const todos = [
   { id: 1, name: "Get groceries" },
@@ -15,4 +17,9 @@ export const addTodo = os.input(z.object({ name: z.string() })).handler(({ input
   const newTodo = { id: todos.length + 1, name: input.name };
   todos.push(newTodo);
   return newTodo;
+});
+
+export const select1 = os.handler(async () => {
+  const one = await db.execute(sql`SELECT 1`);
+  return { one };
 });
