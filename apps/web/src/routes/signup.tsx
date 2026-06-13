@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "#/components/ui/card";
 import { FieldGroup, FieldDescription } from "#/components/ui/field";
 import z from "zod";
@@ -12,6 +12,7 @@ export const Route = createFileRoute("/signup")({
 
 function RouteComponent() {
   const signUpMutation = useMutation(orpc.auth.signUp.mutationOptions());
+  const navigate = useNavigate();
   const form = useAppForm({
     defaultValues: {
       username: "",
@@ -48,6 +49,8 @@ function RouteComponent() {
         username: value.username,
         password: value.password,
       });
+
+      await navigate({ to: "/dashboard" });
     },
   });
   return (

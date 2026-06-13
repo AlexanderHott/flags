@@ -16,6 +16,10 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "#/components/ui/sidebar.tsx";
+import { useMutation } from "@tanstack/react-query";
+import { orpc } from "#/orpc/client";
+import { useNavigate } from "@tanstack/react-router";
+import { Spinner } from "./ui/spinner";
 
 export function NavUser({
   user,
@@ -27,6 +31,8 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
+  const logOutMutation = useMutation(orpc.auth.logOut.mutationOptions());
+  const navigate = useNavigate();
 
   return (
     <SidebarMenu>
@@ -89,8 +95,14 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOut />
+            <DropdownMenuItem
+              disabled={logOutMutation.isPending}
+              onClick={async () => {
+                await logOutMutation.mutateAsync({});
+                navigate({ to: "/" });
+              }}
+            >
+              {logOutMutation.isPending ? <Spinner /> : <LogOut />}
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>

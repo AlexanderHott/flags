@@ -12,7 +12,7 @@ import {
   validateSession,
   verifyPassword,
 } from "../auth";
-import { publicProcedure } from "./server";
+import { protectedProcedure, publicProcedure } from "./server";
 
 export const signUp = publicProcedure
   .input(
@@ -104,6 +104,12 @@ export const logIn = publicProcedure
 
     return { userId: user.id, sessionId: session.id };
   });
+
+export const logOut = protectedProcedure.handler(async ({ context }) => {
+  await db.delete(schema.sessions).where(eq(schema.sessions.id, context.sessionId));
+  context.responseHeaders.append("Set-Cookie", createSessionCookie(""));
+  return { sessionId: context.sessionId };
+});
 
 export const verifySession = publicProcedure.handler(async ({ context }) => {
   const cookieString = context.headers.get("cookie");
