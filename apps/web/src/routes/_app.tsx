@@ -220,7 +220,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 interface AppShellProps {
   children: ReactNode;
 }
-function AppShell(_props: AppShellProps) {
+function AppShell(props: AppShellProps) {
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -243,16 +243,7 @@ function AppShell(_props: AppShellProps) {
           </div>
         </header>
 
-        {/* {props.children} */}
-
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
-          </div>
-          <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
-        </div>
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{props.children}</div>
       </SidebarInset>
     </SidebarProvider>
   );

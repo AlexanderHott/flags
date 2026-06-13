@@ -14,8 +14,10 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiSplatRouteImport } from './routes/api.$'
-import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
+import { Route as AppDashboardIndexRouteImport } from './routes/_app/dashboard.index'
 import { Route as ApiRpcSplatRouteImport } from './routes/api.rpc.$'
+import { Route as AppDashboardProjectNewRouteImport } from './routes/_app/dashboard.project.new'
+import { Route as AppDashboardProjectProjectIdRouteImport } from './routes/_app/dashboard.project.$projectId'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -41,9 +43,9 @@ const ApiSplatRoute = ApiSplatRouteImport.update({
   path: '/api/$',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppDashboardRoute = AppDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+const AppDashboardIndexRoute = AppDashboardIndexRouteImport.update({
+  id: '/dashboard/',
+  path: '/dashboard/',
   getParentRoute: () => AppRoute,
 } as any)
 const ApiRpcSplatRoute = ApiRpcSplatRouteImport.update({
@@ -51,22 +53,37 @@ const ApiRpcSplatRoute = ApiRpcSplatRouteImport.update({
   path: '/api/rpc/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppDashboardProjectNewRoute = AppDashboardProjectNewRouteImport.update({
+  id: '/dashboard/project/new',
+  path: '/dashboard/project/new',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDashboardProjectProjectIdRoute =
+  AppDashboardProjectProjectIdRouteImport.update({
+    id: '/dashboard/project/$projectId',
+    path: '/dashboard/project/$projectId',
+    getParentRoute: () => AppRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/dashboard': typeof AppDashboardRoute
   '/api/$': typeof ApiSplatRoute
   '/api/rpc/$': typeof ApiRpcSplatRoute
+  '/dashboard/': typeof AppDashboardIndexRoute
+  '/dashboard/project/$projectId': typeof AppDashboardProjectProjectIdRoute
+  '/dashboard/project/new': typeof AppDashboardProjectNewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/dashboard': typeof AppDashboardRoute
   '/api/$': typeof ApiSplatRoute
   '/api/rpc/$': typeof ApiRpcSplatRoute
+  '/dashboard': typeof AppDashboardIndexRoute
+  '/dashboard/project/$projectId': typeof AppDashboardProjectProjectIdRoute
+  '/dashboard/project/new': typeof AppDashboardProjectNewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -74,24 +91,44 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/_app/dashboard': typeof AppDashboardRoute
   '/api/$': typeof ApiSplatRoute
   '/api/rpc/$': typeof ApiRpcSplatRoute
+  '/_app/dashboard/': typeof AppDashboardIndexRoute
+  '/_app/dashboard/project/$projectId': typeof AppDashboardProjectProjectIdRoute
+  '/_app/dashboard/project/new': typeof AppDashboardProjectNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/signup' | '/dashboard' | '/api/$' | '/api/rpc/$'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/signup'
+    | '/api/$'
+    | '/api/rpc/$'
+    | '/dashboard/'
+    | '/dashboard/project/$projectId'
+    | '/dashboard/project/new'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/signup' | '/dashboard' | '/api/$' | '/api/rpc/$'
+  to:
+    | '/'
+    | '/login'
+    | '/signup'
+    | '/api/$'
+    | '/api/rpc/$'
+    | '/dashboard'
+    | '/dashboard/project/$projectId'
+    | '/dashboard/project/new'
   id:
     | '__root__'
     | '/'
     | '/_app'
     | '/login'
     | '/signup'
-    | '/_app/dashboard'
     | '/api/$'
     | '/api/rpc/$'
+    | '/_app/dashboard/'
+    | '/_app/dashboard/project/$projectId'
+    | '/_app/dashboard/project/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -140,11 +177,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_app/dashboard': {
-      id: '/_app/dashboard'
+    '/_app/dashboard/': {
+      id: '/_app/dashboard/'
       path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof AppDashboardRouteImport
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof AppDashboardIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/api/rpc/$': {
@@ -154,15 +191,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiRpcSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/dashboard/project/new': {
+      id: '/_app/dashboard/project/new'
+      path: '/dashboard/project/new'
+      fullPath: '/dashboard/project/new'
+      preLoaderRoute: typeof AppDashboardProjectNewRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/dashboard/project/$projectId': {
+      id: '/_app/dashboard/project/$projectId'
+      path: '/dashboard/project/$projectId'
+      fullPath: '/dashboard/project/$projectId'
+      preLoaderRoute: typeof AppDashboardProjectProjectIdRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
 interface AppRouteChildren {
-  AppDashboardRoute: typeof AppDashboardRoute
+  AppDashboardIndexRoute: typeof AppDashboardIndexRoute
+  AppDashboardProjectProjectIdRoute: typeof AppDashboardProjectProjectIdRoute
+  AppDashboardProjectNewRoute: typeof AppDashboardProjectNewRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
-  AppDashboardRoute: AppDashboardRoute,
+  AppDashboardIndexRoute: AppDashboardIndexRoute,
+  AppDashboardProjectProjectIdRoute: AppDashboardProjectProjectIdRoute,
+  AppDashboardProjectNewRoute: AppDashboardProjectNewRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
