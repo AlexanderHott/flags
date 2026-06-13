@@ -34,9 +34,7 @@ export const Route = createFileRoute("/_app/dashboard/")({
 });
 
 function RouteComponent() {
-  return (
-      <Dashboard />
-  );
+  return <Dashboard />;
 }
 
 function Dashboard() {
@@ -50,7 +48,6 @@ function Dashboard() {
     </div>
   );
 }
-
 
 type Flag = RouterOutputs["project"]["list"]["projects"][number];
 const columnHelper = createColumnHelper<Flag>();
@@ -94,7 +91,15 @@ function ProjectsTable() {
     }),
     columnHelper.accessor("name", {
       header: "Name",
-      cell: ({ getValue, row }) => <Link className="font-bold" to="/dashboard/project/$projectId" params={{projectId: row.original.id}}>{getValue()}</Link>,
+      cell: ({ getValue, row }) => (
+        <Link
+          className="font-bold"
+          to="/dashboard/project/$projectId"
+          params={{ projectId: row.original.id }}
+        >
+          {getValue()}
+        </Link>
+      ),
     }),
     columnHelper.accessor("createdAt", {
       header: "Created at",
@@ -116,7 +121,7 @@ function ProjectsTable() {
               <div className="size-4" />
               Copy project ID
             </DropdownMenuItem>
-            <DropdownMenuItem variant="destructive" >
+            <DropdownMenuItem variant="destructive">
               <TrashIcon className="text-destructive-foreground" />
               <span className="text-destructive-foreground">Delete</span>
             </DropdownMenuItem>
@@ -128,9 +133,11 @@ function ProjectsTable() {
 
   return (
     <div className="flex flex-col gap-4">
-    <Button asChild className="w-min">
-    <Link to="/dashboard/project/new">New Project <PlusIcon /></Link>
-    </Button>
+      <Button asChild className="w-min">
+        <Link to="/dashboard/project/new">
+          New Project <PlusIcon />
+        </Link>
+      </Button>
       <DataTable
         pagination={pagination}
         setPagination={setPagination}
