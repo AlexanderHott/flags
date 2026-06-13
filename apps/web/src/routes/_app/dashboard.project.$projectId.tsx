@@ -1,8 +1,11 @@
 import { DataTable } from "#/components/data-table";
 import { Dialog, DialogContent, DialogTrigger } from "#/components/ui/dialog";
 import { FieldGroup, FieldLegend, FieldSet } from "#/components/ui/field";
+import { Checkbox } from "#/components/ui/checkbox";
 import { orpc } from "#/orpc/client";
 import {
+    infiniteQueryOptions,
+  keepPreviousData,
   useMutation,
   useQueryClient,
   useSuspenseInfiniteQuery,
@@ -10,8 +13,8 @@ import {
   type InfiniteData,
 } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { createColumnHelper } from "@tanstack/react-table";
-import { Suspense } from "react";
+import { createColumnHelper, type PaginationState } from "@tanstack/react-table";
+import { Suspense, useState } from "react";
 import type { RouterOutputs } from "#/orpc/client";
 import { Skeleton } from "#/components/ui/skeleton";
 import { Switch } from "#/components/ui/switch";
@@ -61,7 +64,7 @@ function ProjectDashboardSkeleton() {
   return <Skeleton className="w-32 h-12" />;
 }
 
-type Flag = RouterOutputs["flags"]["list"][number];
+type Flag = RouterOutputs["flags"]["list"]["flags"][number];
 const columnHelper = createColumnHelper<Flag>();
 
 interface FlagSwitchProps {
@@ -82,13 +85,16 @@ function FlagSwitch(props: FlagSwitchProps) {
       onMutate: async (newFlag, context) => {
         await context.client.cancelQueries({ queryKey });
         const previousFlags = context.client.getQueryData(queryKey);
-        context.client.setQueryData(queryKey, (old?: InfiniteData<Flag[], undefined>) => {
-          if (!old) return undefined;
-          const pagesNew = old.pages.map((page) =>
-            page.map((flag) => (flag.id === props.id ? { ...flag, ...newFlag } : flag)),
-          );
-          return { ...old, pages: pagesNew };
-        });
+        context.client.setQueryData(
+          queryKey,
+          (old?: InfiniteData<{ flags: Flag[]; nextId?: string }, undefined>) => {
+            if (!old) return undefined;
+            const pagesNew = old.pages.map((page) =>
+              page.flags.map((flag) => (flag.id === props.id ? { ...flag, ...newFlag } : flag)),
+            );
+            return { ...old, pages: pagesNew };
+          },
+        );
 
         return { previousFlags };
       },
@@ -114,16 +120,43 @@ function FlagSwitch(props: FlagSwitchProps) {
 
 function FlagsTable() {
   const { projectId } = Route.useParams();
+  const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
   const flagsInfiniteQuery = useSuspenseInfiniteQuery(
     orpc.flags.list.infiniteOptions({
-      input: (_pageParam: number | undefined) => ({ projectId }),
+      input: (pageParam: string | undefined) => ({
+        projectId,
+        cursor: pageParam,
+        limit: pagination.pageSize,
+      }),
       initialPageParam: undefined,
-      getNextPageParam: (lastPage) => lastPage.length,
+      getNextPageParam: (lastPage) => lastPage.nextId ?? undefined,
+      placeholderData: keepPreviousData,
     }),
   );
 
   const columns = [
-    columnHelper.display({ id: "select", header: "select" }),
+    columnHelper.display({
+      id: "select",
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    }),
     columnHelper.accessor("name", {
       header: "Name",
       cell: ({ getValue }) => <div>{getValue()}</div>,
@@ -171,7 +204,15 @@ function FlagsTable() {
   return (
     <div className="flex flex-col gap-4">
       <NewFlagFormDialog />
-      <DataTable data={flagsInfiniteQuery.data.pages[0]!} columns={columns} />
+      <DataTable
+        pagination={pagination}
+        setPagination={setPagination}
+        pages={flagsInfiniteQuery.data.pages.map((p) => p.flags)}
+        columns={columns}
+        fetchNextPage={() => flagsInfiniteQuery.fetchNextPage()}
+        hasNextPage={flagsInfiniteQuery.hasNextPage}
+        isFetchingNextPage={flagsInfiniteQuery.isFetchingNextPage}
+      />
     </div>
   );
 }

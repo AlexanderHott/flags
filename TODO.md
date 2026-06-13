@@ -1,0 +1,2 @@
+- [ ] redirect to dashbaord after signup
+- [ ] correct query invalidation
