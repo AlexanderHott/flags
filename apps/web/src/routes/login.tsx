@@ -49,9 +49,7 @@ function RouteComponent() {
               <FieldGroup>
                 <form.AppField
                   name="username"
-                  children={(field) => (
-                    <field.TextField label="Username" />
-                  )}
+                  children={(field) => <field.TextField label="Username" />}
                 />
                 <form.AppField
                   name="password"

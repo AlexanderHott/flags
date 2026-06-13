@@ -2,7 +2,7 @@ import { Spinner } from "#/components/ui/spinner";
 import { SessionProvider } from "#/hooks/useSession";
 import { orpc } from "#/orpc/client";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, Navigate, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Link, Navigate, Outlet, useParams } from "@tanstack/react-router";
 import {
   AudioWaveform,
   BookOpen,
@@ -221,6 +221,7 @@ interface AppShellProps {
   children: ReactNode;
 }
 function AppShell(props: AppShellProps) {
+  const { projectId } = useParams({ strict: false });
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -232,12 +233,20 @@ function AppShell(props: AppShellProps) {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">Build Your Application</BreadcrumbLink>
+                  <BreadcrumbLink asChild>
+                    <Link to="/dashboard">Dashboard</Link>
+                  </BreadcrumbLink>
                 </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
+                {projectId && (
+                    <>
+                    <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
+                  <BreadcrumbLink asChild>
+                    <Link to="/dashboard/project/$projectId" params={{projectId}}>{projectId}</Link>
+                  </BreadcrumbLink>
                 </BreadcrumbItem>
+                </>
+                )}
               </BreadcrumbList>
             </Breadcrumb>
           </div>

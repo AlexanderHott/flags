@@ -18,7 +18,7 @@ function Home() {
         </nav>
 
         <div className="flex flex-col h-full items-center justify-center">
-            <h1 className="p-4 text-center text-foreground text-6xl font-bold">Feature Flags</h1>
+          <h1 className="p-4 text-center text-foreground text-6xl font-bold">Feature Flags</h1>
         </div>
       </div>
     </HeroGeometric>
