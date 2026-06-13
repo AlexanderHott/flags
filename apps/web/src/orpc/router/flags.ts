@@ -13,7 +13,7 @@ export const list = protectedProcedure
     const flags = await db.query.flags.findMany({
       where: eq(schema.flags.projectId, input.projectId),
       limit: 10,
-      orderBy: desc(schema.flags.createdAt)
+      orderBy: desc(schema.flags.createdAt),
     });
 
     return flags;

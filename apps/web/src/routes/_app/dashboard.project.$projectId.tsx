@@ -22,7 +22,7 @@ import { PlusIcon } from "lucide-react";
 
 export const Route = createFileRoute("/_app/dashboard/project/$projectId")({
   component: RouteComponent,
-  validateSearch: z.object({newFlagFormOpen: z.boolean().optional()})
+  validateSearch: z.object({ newFlagFormOpen: z.boolean().optional() }),
 });
 
 function RouteComponent() {
@@ -141,10 +141,15 @@ function FlagsTable() {
 }
 
 function NewFlagFormDialog() {
-    const {newFlagFormOpen} = Route.useSearch()
-    const navigate = useNavigate()
+  const { newFlagFormOpen } = Route.useSearch();
+  const navigate = useNavigate();
   return (
-    <Dialog open={newFlagFormOpen ?? false} onOpenChange={(isOpen) => navigate({to: ".", search: {newFlagFormOpen: isOpen || undefined}})}>
+    <Dialog
+      open={newFlagFormOpen ?? false}
+      onOpenChange={(isOpen) =>
+        navigate({ to: ".", search: { newFlagFormOpen: isOpen || undefined } })
+      }
+    >
       <DialogTrigger asChild>
         <Button variant="outline" className="w-min">
           New Flag <PlusIcon className="size-4" />
