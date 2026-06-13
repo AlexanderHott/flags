@@ -29,6 +29,7 @@ ENV PORT=3000
 WORKDIR /app
 
 COPY --from=build /app/apps/web/.output/ ./.output
+COPY --from=build /app/apps/web/drizzle/ ./drizzle
 
 EXPOSE 3000
 
