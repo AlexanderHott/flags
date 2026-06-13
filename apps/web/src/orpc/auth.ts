@@ -111,15 +111,12 @@ export function createSessionCookie(sessionToken: string) {
 
 export function getSessionTokenFromCookieString(cookieString: string) {
   const cookies = cookieString.split("; ").filter(Boolean);
-  console.log({ cookies });
   const sessionTokenCookie = cookies.find((c) => c.startsWith(`${SESSION_TOKEN_COOKIE_NAME}=`));
 
-  console.log({ sessionTokenCookie });
   if (!sessionTokenCookie) {
     return undefined;
   }
   const [_, sessionTokenEncoded] = sessionTokenCookie.split("=", 2);
-  console.log({ sessionTokenEncoded });
   if (!sessionTokenEncoded) {
     return undefined;
   }
