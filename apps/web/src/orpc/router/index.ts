@@ -1,6 +1,6 @@
 import { logIn, signUp, verifySession } from "./auth";
 import { addTodo, listTodos, select1 } from "./todos";
-import * as project from "./project"
+import * as project from "./project";
 
 export default {
   listTodos,
