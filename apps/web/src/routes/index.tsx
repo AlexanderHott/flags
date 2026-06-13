@@ -1,32 +1,27 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useRef, useMemo } from "react";
-import { Canvas, useFrame, type ThreeElements } from "@react-three/fiber";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useRef, type ReactNode } from "react";
 import * as THREE from "three";
 import { motion } from "motion/react";
 import { cn } from "../lib/utils";
-
-/* eslint-disable @typescript-eslint/no-namespace */
-declare module "react" {
-  namespace JSX {
-    // eslint-disable-next-line @typescript-eslint/no-empty-interface
-    interface IntrinsicElements extends ThreeElements {}
-  }
-}
-/* eslint-enable @typescript-eslint/no-namespace */
+import { Button } from "#/components/ui/button";
 
 export const Route = createFileRoute("/")({ component: Home });
 
 function Home() {
   return (
-      <HeroGeometric 
+    <HeroGeometric color1="#21123b" color2="#a77bf5" speed={1}>
+      <div className="flex flex-col w-screen h-screen">
+        <nav className="p-2 flex justify-end">
+          <Button asChild>
+            <Link to="/login">Login</Link>
+          </Button>
+        </nav>
 
-          title1="Elevate"
-    title2="Your Brand"
-    description="Scale your product with clarity, precision, and motion-led design."
-    color1="#3B82F6"
-    color2="#F0F9FF"
-    speed={1}
-      />
+        <div className="flex flex-col h-full items-center justify-center">
+            <h1 className="p-4 text-center text-foreground text-6xl font-bold">Feature Flags</h1>
+        </div>
+      </div>
+    </HeroGeometric>
   );
 }
 
@@ -131,9 +126,9 @@ void main() {
     }
     
     // Softer fade to white - only at extreme bottom-left
-    vec2 cornerDist = vec2(uv.x, uv.y);
-    float fadeMask = smoothstep(0.0, 0.25, length(cornerDist));
-    color = mix(vec3(1.0), color, fadeMask);
+    // vec2 cornerDist = vec2(uv.x, uv.y);
+    // float fadeMask = smoothstep(0.0, 0.25, length(cornerDist));
+    // color = mix(vec3(1.0), color, fadeMask);
     
     // Add subtle vignette to emphasize corners
     float vignette = smoothstep(1.2, 0.3, length(uv - 0.5));
@@ -143,7 +138,7 @@ void main() {
 }
 `;
 
-const GradientPlane = ({
+const GradientCanvas = ({
   color1,
   color2,
   speed = 1,
@@ -152,60 +147,92 @@ const GradientPlane = ({
   color2: string;
   speed?: number;
 }) => {
-  const meshRef = useRef<THREE.Mesh>(null);
-  const uniforms = useMemo(
-    () => ({
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: false,
+      alpha: true,
+    });
+    renderer.setPixelRatio(1);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    const timer = new THREE.Timer();
+    const uniforms = {
       uTime: { value: 0 },
       uResolution: { value: new THREE.Vector2(1000, 1000) },
       uColor1: { value: new THREE.Color(color1) },
       uColor2: { value: new THREE.Color(color2) },
-    }),
-    [color1, color2],
-  );
+    };
+    const geometry = new THREE.PlaneGeometry(2, 2);
+    const material = new THREE.ShaderMaterial({
+      vertexShader,
+      fragmentShader,
+      uniforms,
+      transparent: true,
+      depthWrite: false,
+      depthTest: false,
+    });
+    const mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
 
-  useFrame((state) => {
-    const { clock, size } = state;
-    uniforms.uTime.value = clock.getElapsedTime() * speed;
-    uniforms.uResolution.value.set(size.width, size.height);
-    uniforms.uColor1.value.set(color1);
-    uniforms.uColor2.value.set(color2);
-  });
+    const resize = () => {
+      const { width, height } = canvas.getBoundingClientRect();
+      renderer.setSize(width, height, false);
+      uniforms.uResolution.value.set(width, height);
+    };
 
-  return (
-    <mesh ref={meshRef} scale={[2, 2, 1]}>
-      <planeGeometry args={[2, 2]} />
-      <shaderMaterial
-        vertexShader={vertexShader}
-        fragmentShader={fragmentShader}
-        uniforms={uniforms}
-        transparent={true}
-        depthWrite={false}
-        depthTest={false}
-      />
-    </mesh>
-  );
+    const observer = new ResizeObserver(resize);
+    observer.observe(canvas);
+    resize();
+
+    if (typeof document !== "undefined") {
+      timer.connect(document);
+    }
+
+    let animationFrame = 0;
+    const render = (timestamp: number) => {
+      timer.update(timestamp);
+      uniforms.uTime.value = timer.getElapsed() * speed;
+      renderer.render(scene, camera);
+      animationFrame = requestAnimationFrame(render);
+    };
+    animationFrame = requestAnimationFrame(render);
+
+    return () => {
+      cancelAnimationFrame(animationFrame);
+      observer.disconnect();
+      timer.dispose();
+      geometry.dispose();
+      material.dispose();
+      renderer.dispose();
+    };
+  }, [color1, color2, speed]);
+
+  return <canvas ref={canvasRef} className="block h-full w-full" />;
 };
 
 // --- Main Component ---
 
 interface HeroGeometricProps {
-  title1?: string;
-  title2?: string;
-  description?: string;
   className?: string; // Explicitly included
   color1?: string;
   color2?: string;
   speed?: number;
+  children: ReactNode;
 }
 
 function HeroGeometric({
-  title1,
-  title2,
-  description,
   color1 = "#3B82F6", // Default soft blue
   color2 = "#F0F9FF", // Default pale blue
   speed = 1,
   className,
+  children,
 }: HeroGeometricProps) {
   return (
     <div
@@ -216,67 +243,11 @@ function HeroGeometric({
       style={{ containerType: "size" }}
     >
       {/* Background Shader */}
-      <div className="absolute top-0 left-0 w-full h-full z-0 pointer-events-none">
-        <Canvas
-          camera={{ position: [0, 0, 1] }}
-          dpr={[1, 1]}
-          gl={{
-            antialias: false,
-            alpha: true,
-          }}
-        >
-          <GradientPlane color1={color1} color2={color2} speed={speed} />
-        </Canvas>
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <GradientCanvas color1={color1} color2={color2} speed={speed} />
       </div>
 
-      {/* Content */}
-      {(title1 || title2 || description) && (
-        <div className="relative z-10 w-full flex-1 flex flex-col items-center justify-center pt-8 pb-8 md:pt-20 md:pb-20">
-          <div className="w-full max-w-[1200px] px-6 flex flex-col items-center">
-            {/* Headline */}
-            <div className="flex flex-col items-center text-center gap-2 md:gap-4 mb-8 md:mb-12">
-              {title1 && (
-                <div className="overflow-hidden">
-                  <motion.h1
-                    initial={{ y: "100%", opacity: 0 }}
-                    animate={{ y: "0%", opacity: 1 }}
-                    transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-                    className="text-[12cqi] md:text-[8cqi] lg:text-[6cqi] leading-[0.9] tracking-tighter text-[#131313]"
-                  >
-                    <span className="font-serif italic font-light text-[#1a1a1a]">{title1}</span>
-                  </motion.h1>
-                </div>
-              )}
-              {title2 && (
-                <div className="overflow-hidden">
-                  <motion.h1
-                    initial={{ y: "100%", opacity: 0 }}
-                    animate={{ y: "0%", opacity: 1 }}
-                    transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.35 }}
-                    className="text-[12cqi] md:text-[8cqi] lg:text-[6cqi] leading-[0.9] tracking-tighter font-bold text-black"
-                  >
-                    {title2}
-                  </motion.h1>
-                </div>
-              )}
-            </div>
-
-            {/* Subheadline */}
-            {description && (
-              <div className="max-w-[480px] text-center mb-8">
-                <motion.p
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
-                  className="text-lg md:text-[1.35rem] leading-relaxed text-neutral-600 font-normal"
-                >
-                  {description}
-                </motion.p>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      <div className="relative z-10 h-full w-full">{children}</div>
     </div>
   );
 }

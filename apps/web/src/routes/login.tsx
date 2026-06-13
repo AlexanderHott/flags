@@ -50,7 +50,7 @@ function RouteComponent() {
                 <form.AppField
                   name="username"
                   children={(field) => (
-                    <field.TextField label="Username" placeholder="A unique identifier" />
+                    <field.TextField label="Username" />
                   )}
                 />
                 <form.AppField
