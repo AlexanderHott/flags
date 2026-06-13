@@ -24,7 +24,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "#/components/ui/dropdown-menu";
 
@@ -74,7 +73,7 @@ function FlagSwitch(props: FlagSwitchProps) {
   const queryClient = useQueryClient();
 
   const queryKey = orpc.flags.list.infiniteKey({
-    input: (pageParam: number | undefined) => ({ projectId }),
+    input: (_pageParam: number | undefined) => ({ projectId }),
     initialPageParam: undefined,
   });
 
@@ -93,7 +92,7 @@ function FlagSwitch(props: FlagSwitchProps) {
 
         return { previousFlags };
       },
-      onError: (err, newFlag, onMutateResult, context) => {
+      onError: (_err, _newFlag, onMutateResult, context) => {
         context.client.setQueryData(queryKey, onMutateResult?.previousFlags);
       },
       onSettled: () =>
@@ -117,8 +116,7 @@ function FlagsTable() {
   const { projectId } = Route.useParams();
   const flagsInfiniteQuery = useSuspenseInfiniteQuery(
     orpc.flags.list.infiniteOptions({
-      input: (pageParam: number | undefined) => ({ projectId }),
-      // context: { cache: true }, // Provide client context if needed
+      input: (_pageParam: number | undefined) => ({ projectId }),
       initialPageParam: undefined,
       getNextPageParam: (lastPage) => lastPage.length,
     }),

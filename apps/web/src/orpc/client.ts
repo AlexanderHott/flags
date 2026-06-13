@@ -14,6 +14,8 @@ const getORPCClient = createIsomorphicFn()
     createRouterClient(router, {
       context: () => ({
         headers: getRequestHeaders(),
+        // FIXME: is this correct? how do we actually apply these after they are mutated in the router?
+        responseHeaders: new Headers(),
       }),
     }),
   )

@@ -7,9 +7,12 @@ export function base64urlEncode(bytes: Bytes): string {
 
   let index = 0;
   for (; index + 2 < bytes.length; index += 3) {
+    // @ts-expect-error TS2532: this is safe because of the index + 2 bounds check
     const value = (bytes[index] << 16) | (bytes[index + 1] << 8) | bytes[index + 2];
     encoded +=
+      // @ts-expect-error TS2532: this is safe because of the index + 2 bounds check
       alphabet[(value >> 18) & 63] +
+      // @ts-expect-error TS2532: this is safe because of the index + 2 bounds check
       alphabet[(value >> 12) & 63] +
       alphabet[(value >> 6) & 63] +
       alphabet[value & 63];
@@ -17,11 +20,15 @@ export function base64urlEncode(bytes: Bytes): string {
 
   const remaining = bytes.length - index;
   if (remaining === 1) {
+    // @ts-expect-error TS2532: this is safe because there is 1 remaining item in the array
     const value = bytes[index] << 16;
+    // @ts-expect-error TS2532: this is safe because & 63 always limits it to <= 63rd index
     encoded += alphabet[(value >> 18) & 63] + alphabet[(value >> 12) & 63];
   } else if (remaining === 2) {
+    // @ts-expect-error TS2532: this is safe because there are 2 remaining items in the array
     const value = (bytes[index] << 16) | (bytes[index + 1] << 8);
     encoded +=
+      // @ts-expect-error TS2532: this is safe because & 63 always limits it to <= 63rd index
       alphabet[(value >> 18) & 63] + alphabet[(value >> 12) & 63] + alphabet[(value >> 6) & 63];
   }
 
