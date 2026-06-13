@@ -14,12 +14,12 @@ import {
   PieChart,
   Settings2,
   SquareTerminal,
-} from "lucide-react"
+} from "lucide-react";
 
-import { NavMain } from "#/components/nav-main.tsx"
-import { NavProjects } from "#/components/nav-projects.tsx"
-import { NavUser } from "#/components/nav-user.tsx"
-import { TeamSwitcher } from "#/components/team-switcher.tsx"
+import { NavMain } from "#/components/nav-main.tsx";
+import { NavProjects } from "#/components/nav-projects.tsx";
+import { NavUser } from "#/components/nav-user.tsx";
+import { TeamSwitcher } from "#/components/team-switcher.tsx";
 import {
   Sidebar,
   SidebarContent,
@@ -29,10 +29,18 @@ import {
   SidebarProvider,
   SidebarRail,
   SidebarTrigger,
-} from "#/components/ui/sidebar.tsx"
+} from "#/components/ui/sidebar.tsx";
 import type { ReactNode } from "react";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "#/components/ui/breadcrumb";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "#/components/ui/breadcrumb";
 import { Separator } from "#/components/ui/separator";
+import { ThemeToggle } from "#/components/theme-toggle";
 
 export const Route = createFileRoute("/_app")({
   component: RouteComponent,
@@ -54,14 +62,12 @@ function RouteComponent() {
 
   return (
     <SessionProvider value={sessionQuery.data}>
-    <AppShell>
-    <Outlet />
-    </AppShell>
+      <AppShell>
+        <Outlet />
+      </AppShell>
     </SessionProvider>
   );
 }
-
-
 
 const data = {
   user: {
@@ -190,12 +196,11 @@ const data = {
       icon: Map,
     },
   ],
-}
-
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="icon" variant="floating" {...props}>
+    <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
@@ -204,33 +209,30 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
+        <ThemeToggle />
         <NavUser user={data.user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }
 
 interface AppShellProps {
-    children: ReactNode;
+  children: ReactNode;
 }
-function AppShell(props: AppShellProps) {
-     return <SidebarProvider>
+function AppShell(_props: AppShellProps) {
+  return (
+    <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
-            <Separator
-              orientation="vertical"
-              className="mr-2 data-[orientation=vertical]:h-4"
-            />
+            <Separator orientation="vertical" className="mr-2 data-[orientation=vertical]:h-4" />
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                    Build Your Application
-                  </BreadcrumbLink>
+                  <BreadcrumbLink href="#">Build Your Application</BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
@@ -253,4 +255,5 @@ function AppShell(props: AppShellProps) {
         </div>
       </SidebarInset>
     </SidebarProvider>
+  );
 }
