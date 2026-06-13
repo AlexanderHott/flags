@@ -49,3 +49,19 @@ export const protectedProcedure = publicProcedure.use(async ({ context, next }) 
 
   return next({ context: { userId: dbSession.userId, sessionId: dbSession.id } });
 });
+
+export async function assertProjectOwnership(userId: string, projectId: string) {
+  const project = await db.query.projects.findFirst({
+    where: eq(schema.projects.id, projectId),
+  });
+
+  if (!project) {
+    throw new ORPCError("NOT_FOUND");
+  }
+
+  if (project.userId !== userId) {
+    throw new ORPCError("UNAUTHORIZED");
+  }
+
+  return project;
+}

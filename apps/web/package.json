@@ -39,7 +39,7 @@
     "@tanstack/react-router-ssr-query": "latest",
     "@tanstack/react-start": "latest",
     "@tanstack/react-store": "catalog:",
-    "@tanstack/react-table": "latest",
+    "@tanstack/react-table": "catalog:",
     "@tanstack/router-plugin": "^1.132.0",
     "class-variance-authority": "catalog:",
     "clsx": "^2.1.1",

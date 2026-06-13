@@ -19,6 +19,7 @@ catalog:
   "@tanstack/react-store": ^0.11.0
   "@alexanderhott/resultts": ^0.1.0
   lucide-react: ^0.577.0
+  '@tanstack/react-table': latest
 overrides:
   vite: "catalog:"
   vitest: "catalog:"

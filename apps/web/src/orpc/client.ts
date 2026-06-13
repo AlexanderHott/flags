@@ -5,7 +5,7 @@ import { createTanstackQueryUtils } from "@orpc/tanstack-query";
 import { getRequestHeaders } from "@tanstack/react-start/server";
 import { createIsomorphicFn } from "@tanstack/react-start";
 
-import type { RouterClient } from "@orpc/server";
+import type { InferRouterInputs, InferRouterOutputs, RouterClient } from "@orpc/server";
 
 import router from "#/orpc/router";
 
@@ -27,3 +27,6 @@ const getORPCClient = createIsomorphicFn()
 export const client: RouterClient<typeof router> = getORPCClient();
 
 export const orpc = createTanstackQueryUtils(client);
+
+export type RouterInputs = InferRouterInputs<typeof router>;
+export type RouterOutputs = InferRouterOutputs<typeof router>;

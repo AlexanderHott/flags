@@ -17,6 +17,7 @@ import { SubmitButton } from "./submit-button";
 // import { SwitchField } from "./switch-field";
 // import { Textarea } from "./text-area";
 import { TextField } from "./text-field";
+import { SwitchField } from "./switch";
 
 export const { fieldContext, useFieldContext, formContext, useFormContext } =
   createFormHookContexts();
@@ -27,6 +28,7 @@ export const { useAppForm } = createFormHook({
   fieldComponents: {
     // ChatTextarea,
     TextField,
+    SwitchField,
     // HashtagTags: HashtagTagsField,
     // KeywordTags: KeywordTagsField,
     // Textarea,

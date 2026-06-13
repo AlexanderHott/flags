@@ -1,15 +1,13 @@
 import { logIn, signUp, verifySession } from "./auth";
-import { addTodo, listTodos, select1 } from "./todos";
 import * as project from "./project";
+import * as flags from "./flags";
 
 export default {
-  listTodos,
-  addTodo,
-  select1,
   auth: {
     signUp,
     logIn,
     verifySession,
   },
   project,
+  flags,
 };
