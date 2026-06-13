@@ -17,12 +17,8 @@ const config = defineConfig({
     babel({ presets: [reactCompilerPreset()] }),
     tailwindcss(),
     nitro({
-      config: {
-        externals: {
-          inline: ["@tanstack/react-start", "@tanstack/start-server-core"],
-        },
-        rollupConfig: { external: [/^@sentry\//] },
-      },
+      noExternals: ["@tanstack/react-start", "@tanstack/start-server-core"],
+      rollupConfig: { external: [/^@sentry\//] },
     }),
   ],
 });

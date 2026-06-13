@@ -6,9 +6,21 @@ settings:
 
 catalogs:
   default:
+    '@alexanderhott/resultts':
+      specifier: ^0.1.0
+      version: 0.1.0
     '@node-rs/argon2':
       specifier: ^2.0.2
       version: 2.0.2
+    '@tanstack/react-store':
+      specifier: ^0.11.0
+      version: 0.11.0
+    class-variance-authority:
+      specifier: ^0.7.1
+      version: 0.7.1
+    lucide-react:
+      specifier: ^0.577.0
+      version: 0.577.0
     radix-ui:
       specifier: ^1.5.0
       version: 1.5.0
@@ -33,6 +45,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@alexanderhott/resultts':
+        specifier: 'catalog:'
+        version: 0.1.0
       '@faker-js/faker':
         specifier: ^10.3.0
         version: 10.4.0
@@ -57,9 +72,6 @@ importers:
       '@orpc/zod':
         specifier: ^1.13.6
         version: 1.14.5(@orpc/contract@1.14.5)(@orpc/server@1.14.5(crossws@0.4.6(srvx@0.11.16))(ws@8.21.0))(crossws@0.4.6(srvx@0.11.16))(ws@8.21.0)(zod@4.4.3)
-      '@t3-oss/env-core':
-        specifier: ^0.13.10
-        version: 0.13.11(typescript@6.0.3)(zod@4.4.3)
       '@tailwindcss/vite':
         specifier: ^4.1.18
         version: 4.3.0(@voidzero-dev/vite-plus-core@0.1.24(@types/node@22.19.20)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.48.0)(tsx@4.22.4)(typescript@6.0.3)(yaml@2.9.0))
@@ -90,6 +102,9 @@ importers:
       '@tanstack/react-start':
         specifier: latest
         version: 1.168.25(@voidzero-dev/vite-plus-core@0.1.24(@types/node@22.19.20)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.48.0)(tsx@4.22.4)(typescript@6.0.3)(yaml@2.9.0))(crossws@0.4.6(srvx@0.11.16))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@tanstack/react-store':
+        specifier: 'catalog:'
+        version: 0.11.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@tanstack/react-table':
         specifier: latest
         version: 8.21.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -97,7 +112,7 @@ importers:
         specifier: ^1.132.0
         version: 1.168.18(@tanstack/react-router@1.170.15(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@voidzero-dev/vite-plus-core@0.1.24(@types/node@22.19.20)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.48.0)(tsx@4.22.4)(typescript@6.0.3)(yaml@2.9.0))
       class-variance-authority:
-        specifier: ^0.7.1
+        specifier: 'catalog:'
         version: 0.7.1
       clsx:
         specifier: ^2.1.1
@@ -109,7 +124,7 @@ importers:
         specifier: ^0.45.1
         version: 0.45.2(@types/pg@8.20.0)(pg@8.21.0)
       lucide-react:
-        specifier: ^0.577.0
+        specifier: 'catalog:'
         version: 0.577.0(react@19.2.7)
       nitro:
         specifier: latest
@@ -222,6 +237,9 @@ packages:
 
   '@acemir/cssom@0.9.31':
     resolution: {integrity: sha512-ZnR3GSaH+/vJ0YlHau21FjfLYjMpYVIzTD8M8vIEQvIGxeOXyXdzCI140rrCY862p/C/BbzWsjc1dgnM9mkoTA==}
+
+  '@alexanderhott/resultts@0.1.0':
+    resolution: {integrity: sha512-Jzx5rKRgYPfTxHZrOv+dLCx4pdxujnRNTQWBfr4P6Nq8yXfajO4C8g9+QNPHH48Fi4fCsgFUZvGZ6YzIS9n4TQ==}
 
   '@asamuzakjp/css-color@5.1.11':
     resolution: {integrity: sha512-KVw6qIiCTUQhByfTd78h2yD1/00waTmm9uy/R7Ck/ctUyAPj+AEDLkQIdJW0T8+qGgj3j5bpNKK7Q3G+LedJWg==}
@@ -2550,23 +2568,6 @@ packages:
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
 
-  '@t3-oss/env-core@0.13.11':
-    resolution: {integrity: sha512-sM7GYY+KL7H/Hl0BE0inWfk3nRHZOLhmVn7sHGxaZt9FAR6KqREXAE+6TqKfiavfXmpRxO/OZ2QgKRd+oiBYRQ==}
-    peerDependencies:
-      arktype: ^2.1.0
-      typescript: '>=5.0.0'
-      valibot: ^1.0.0-beta.7 || ^1.0.0
-      zod: ^3.24.0 || ^4.0.0
-    peerDependenciesMeta:
-      arktype:
-        optional: true
-      typescript:
-        optional: true
-      valibot:
-        optional: true
-      zod:
-        optional: true
-
   '@tailwindcss/node@4.3.0':
     resolution: {integrity: sha512-aFb4gUhFOgdh9AXo4IzBEOzBkkAxm9VigwDJnMIYv3lcfXCJVesNfbEaBl4BNgVRyid92AmdviqwBUBRKSeY3g==}
 
@@ -4528,6 +4529,8 @@ snapshots:
 
   '@acemir/cssom@0.9.31': {}
 
+  '@alexanderhott/resultts@0.1.0': {}
+
   '@asamuzakjp/css-color@5.1.11':
     dependencies:
       '@asamuzakjp/generational-cache': 1.0.1
@@ -6406,11 +6409,6 @@ snapshots:
       solid-js: 1.9.13
 
   '@standard-schema/spec@1.1.0': {}
-
-  '@t3-oss/env-core@0.13.11(typescript@6.0.3)(zod@4.4.3)':
-    optionalDependencies:
-      typescript: 6.0.3
-      zod: 4.4.3
 
   '@tailwindcss/node@4.3.0':
     dependencies:

@@ -6,23 +6,45 @@ import { useAppForm } from "#/components/form";
 import { useMutation } from "@tanstack/react-query";
 import { orpc } from "#/orpc/client";
 
-export const Route = createFileRoute("/login")({ component: RouteComponent });
+export const Route = createFileRoute("/signup")({
+  component: RouteComponent,
+});
 
 function RouteComponent() {
-  const logInMutation = useMutation(orpc.auth.logIn.mutationOptions());
+  const signUpMutation = useMutation(orpc.auth.signUp.mutationOptions());
   const form = useAppForm({
     defaultValues: {
       username: "",
       password: "",
+      passwordConfirm: "",
     },
     validators: {
-      onChange: z.object({
-        username: z.string().min(3, { error: "Username must be at least 3 characters." }),
-        password: z.string().min(1, { error: "Must enter password" }),
-      }),
+      onChange: z
+        .object({
+          username: z.string().min(3, { error: "Username must be at least 3 characters." }),
+          password: z.string().min(12, { error: "Password must be at least 12 characters." }),
+          passwordConfirm: z
+            .string()
+            .min(12, { error: "Password must be at least 12 characters." }),
+        })
+        .superRefine(({ password, passwordConfirm }, ctx) => {
+          if (password !== passwordConfirm) {
+            ctx.addIssue({
+              code: "invalid_value",
+              message: "passwords don't match",
+              values: [passwordConfirm],
+              path: ["passwordConfirm"],
+            });
+          }
+        }),
+      // TODO: figure out why this doesn't work
+      // .refine(({ password, passwordConfirm }) => password !== passwordConfirm, {
+      //   error: "Passwords do not match",
+      //   path: ["passwordConfirm"],
+      // }),
     },
     onSubmit: async ({ value }) => {
-      await logInMutation.mutateAsync({
+      await signUpMutation.mutateAsync({
         username: value.username,
         password: value.password,
       });
@@ -33,8 +55,8 @@ function RouteComponent() {
       <div className="w-full max-w-sm">
         <Card>
           <CardHeader>
-            <CardTitle>Login to your account</CardTitle>
-            <CardDescription>Enter your information below to login to your account</CardDescription>
+            <CardTitle>Create an account</CardTitle>
+            <CardDescription>Enter your information below to create your account</CardDescription>
           </CardHeader>
           <CardContent>
             <form
@@ -55,11 +77,16 @@ function RouteComponent() {
                   children={(field) => <field.TextField label="Password" type="password" />}
                 />
 
+                <form.AppField
+                  name="passwordConfirm"
+                  children={(field) => <field.TextField label="Conform Password" type="password" />}
+                />
+
                 <FieldGroup>
                   <form.AppForm>
-                    <form.SubmitButton>Log In</form.SubmitButton>
+                    <form.SubmitButton>Create Account</form.SubmitButton>
                     <FieldDescription>
-                      Don't have an account? <Link to="/signup">Sign up</Link>
+                      Already have an account? <Link to="/login">Log in</Link>
                     </FieldDescription>
                   </form.AppForm>
                 </FieldGroup>
