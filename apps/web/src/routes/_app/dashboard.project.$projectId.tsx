@@ -18,7 +18,15 @@ import { Switch } from "#/components/ui/switch";
 import { useAppForm } from "#/components/form";
 import z from "zod";
 import { Button } from "#/components/ui/button";
-import { PlusIcon } from "lucide-react";
+import { LinkIcon, MoreHorizontal, PlusIcon } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "#/components/ui/dropdown-menu"
 
 export const Route = createFileRoute("/_app/dashboard/project/$projectId")({
   component: RouteComponent,
@@ -129,6 +137,28 @@ function FlagsTable() {
     columnHelper.accessor("createdAt", {
       header: "Created at",
       cell: ({ getValue }) => <div>{getValue().toLocaleString()}</div>,
+    }),
+    columnHelper.display({
+        id: "actions",
+      cell: ({row}) => <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal className="size-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(row.original.id)} >
+            <div className="size-4"/>
+              Copy flag ID
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(`${window.location.origin}/api/flag?flagId=${row.original.id}`)} >
+            <LinkIcon className="size-4" />
+              Copy flag URL
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
     }),
   ];
 
