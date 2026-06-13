@@ -1,2 +1,2 @@
-- [ ] redirect to dashbaord after signup
+- [x] redirect to dashbaord after signup
 - [ ] correct query invalidation

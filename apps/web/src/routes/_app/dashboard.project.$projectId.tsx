@@ -12,7 +12,12 @@ import {
   type InfiniteData,
 } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { createColumnHelper, type PaginationState } from "@tanstack/react-table";
+import {
+  createColumnHelper,
+  type Column,
+  type PaginationState,
+  type SortingState,
+} from "@tanstack/react-table";
 import { Suspense, useState } from "react";
 import type { RouterOutputs } from "#/orpc/client";
 import { Skeleton } from "#/components/ui/skeleton";
@@ -20,7 +25,15 @@ import { Switch } from "#/components/ui/switch";
 import { useAppForm } from "#/components/form";
 import z from "zod";
 import { Button } from "#/components/ui/button";
-import { LinkIcon, MoreHorizontal, PlusIcon } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  ArrowUpDown,
+  LinkIcon,
+  MoreHorizontal,
+  PlusIcon,
+  Search,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,6 +41,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "#/components/ui/dropdown-menu";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "#/components/ui/input-group";
 
 export const Route = createFileRoute("/_app/dashboard/project/$projectId")({
   component: RouteComponent,
@@ -117,15 +131,34 @@ function FlagSwitch(props: FlagSwitchProps) {
   );
 }
 
+function SortableHeader<TData>(props: { column: Column<TData>; title: string }) {
+    "use no memo"
+  const sortingDirection = props.column.getIsSorted();
+  return (
+    <Button variant="ghost" onClick={props.column.getToggleSortingHandler()}>
+      {props.title}
+      {sortingDirection === "asc" ? (
+        <ArrowUp />
+      ) : sortingDirection === "desc" ? (
+        <ArrowDown />
+      ) : (
+        <ArrowUpDown />
+      )}
+    </Button>
+  );
+}
+
 function FlagsTable() {
   const { projectId } = Route.useParams();
   const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
+  const [sorting, setSorting] = useState<SortingState>([]);
   const flagsInfiniteQuery = useSuspenseInfiniteQuery(
     orpc.flags.list.infiniteOptions({
       input: (pageParam: string | undefined) => ({
         projectId,
         cursor: pageParam,
         limit: pagination.pageSize,
+        sorting: sorting,
       }),
       initialPageParam: undefined,
       getNextPageParam: (lastPage) => lastPage.nextId ?? undefined,
@@ -157,15 +190,15 @@ function FlagsTable() {
       enableHiding: false,
     }),
     columnHelper.accessor("name", {
-      header: "Name",
+      header: ({column}) => <SortableHeader column={column} title="Name" />,
       cell: ({ getValue }) => <div>{getValue()}</div>,
     }),
     columnHelper.accessor("enabled", {
-      header: "Enabled",
+      header: ({ column }) => <SortableHeader column={column} title="Enabled" />,
       cell: ({ getValue, row }) => <FlagSwitch id={row.original.id} enabled={getValue()} />,
     }),
     columnHelper.accessor("createdAt", {
-      header: "Created at",
+      header: ({ column }) => <SortableHeader column={column} title="Created At" />,
       cell: ({ getValue }) => <div>{getValue().toLocaleString()}</div>,
     }),
     columnHelper.display({
@@ -202,12 +235,24 @@ function FlagsTable() {
 
   return (
     <div className="flex flex-col gap-4">
-      <NewFlagFormDialog />
+      <div className="flex justify-between">
+        <InputGroup className="max-w-xs">
+          <InputGroupInput placeholder="Search..." />
+          <InputGroupAddon>
+            <Search />
+          </InputGroupAddon>
+          <InputGroupAddon align="inline-end">12 results</InputGroupAddon>
+        </InputGroup>
+
+        <NewFlagFormDialog />
+      </div>
       <DataTable
+        columns={columns}
+        pages={flagsInfiniteQuery.data.pages.map((p) => p.flags)}
         pagination={pagination}
         setPagination={setPagination}
-        pages={flagsInfiniteQuery.data.pages.map((p) => p.flags)}
-        columns={columns}
+        sorting={sorting}
+        setSorting={setSorting}
         fetchNextPage={() => flagsInfiniteQuery.fetchNextPage()}
         hasNextPage={flagsInfiniteQuery.hasNextPage}
         isFetchingNextPage={flagsInfiniteQuery.isFetchingNextPage}
@@ -227,7 +272,7 @@ function NewFlagFormDialog() {
       }
     >
       <DialogTrigger asChild>
-        <Button variant="outline" className="w-min">
+        <Button className="w-min">
           New Flag <PlusIcon className="size-4" />
         </Button>
       </DialogTrigger>

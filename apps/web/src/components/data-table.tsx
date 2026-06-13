@@ -2,7 +2,9 @@ import {
   type ColumnDef,
   flexRender,
   getCoreRowModel,
+  getSortedRowModel,
   type PaginationState,
+  type SortingState,
   useReactTable,
 } from "@tanstack/react-table";
 
@@ -20,8 +22,13 @@ import type { Dispatch, SetStateAction } from "react";
 interface DataTableProps<TData> {
   columns: ColumnDef<TData, any>[];
   pages: TData[][];
+
   pagination: PaginationState;
   setPagination: Dispatch<SetStateAction<PaginationState>>;
+
+  sorting: SortingState;
+  setSorting: Dispatch<SetStateAction<SortingState>>;
+
   hasNextPage: boolean;
   fetchNextPage: () => Promise<unknown>;
   isFetchingNextPage: boolean;
@@ -32,6 +39,8 @@ export function DataTable<TData>({
   pages,
   pagination,
   setPagination,
+  sorting,
+  setSorting,
   hasNextPage,
   fetchNextPage,
   isFetchingNextPage,
@@ -40,11 +49,14 @@ export function DataTable<TData>({
     data: pages[pagination.pageIndex] ?? [],
     columns,
     state: {
+      sorting,
       pagination,
     },
     onPaginationChange: setPagination,
+    onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
+    manualSorting: true,
     pageCount: -1,
   });
 

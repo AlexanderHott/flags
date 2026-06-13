@@ -238,14 +238,16 @@ function AppShell(props: AppShellProps) {
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 {projectId && (
-                    <>
+                  <>
                     <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbLink asChild>
-                    <Link to="/dashboard/project/$projectId" params={{projectId}}>{projectId}</Link>
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                </>
+                    <BreadcrumbItem>
+                      <BreadcrumbLink asChild>
+                        <Link to="/dashboard/project/$projectId" params={{ projectId }}>
+                          {projectId}
+                        </Link>
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                  </>
                 )}
               </BreadcrumbList>
             </Breadcrumb>
