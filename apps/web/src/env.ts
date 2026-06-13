@@ -1,7 +1,5 @@
 import { z } from "zod";
 
-console.log(process.env.DATABASE_URL, import.meta.env.DATABASE_URL);
-
 const serverEnvSchema = z.object({
   DATABASE_URL: z.url(),
 });

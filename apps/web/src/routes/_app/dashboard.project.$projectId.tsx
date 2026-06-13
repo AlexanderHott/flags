@@ -26,7 +26,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "#/components/ui/dropdown-menu"
+} from "#/components/ui/dropdown-menu";
 
 export const Route = createFileRoute("/_app/dashboard/project/$projectId")({
   component: RouteComponent,
@@ -139,8 +139,9 @@ function FlagsTable() {
       cell: ({ getValue }) => <div>{getValue().toLocaleString()}</div>,
     }),
     columnHelper.display({
-        id: "actions",
-      cell: ({row}) => <DropdownMenu>
+      id: "actions",
+      cell: ({ row }) => (
+        <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
               <span className="sr-only">Open menu</span>
@@ -149,16 +150,23 @@ function FlagsTable() {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(row.original.id)} >
-            <div className="size-4"/>
+            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(row.original.id)}>
+              <div className="size-4" />
               Copy flag ID
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(`${window.location.origin}/api/flag?flagId=${row.original.id}`)} >
-            <LinkIcon className="size-4" />
+            <DropdownMenuItem
+              onClick={() =>
+                navigator.clipboard.writeText(
+                  `${window.location.origin}/api/flag?flagId=${row.original.id}`,
+                )
+              }
+            >
+              <LinkIcon className="size-4" />
               Copy flag URL
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+      ),
     }),
   ];
 

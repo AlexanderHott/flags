@@ -37,13 +37,13 @@ export const Route = createFileRoute("/api/flag")({
           });
         }
 
-          return new Response(JSON.stringify({ ok: true, enabled: flag.enabled }), {
-            status: 200,
-            statusText: "OK",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
+        return new Response(JSON.stringify({ ok: true, enabled: flag.enabled }), {
+          status: 200,
+          statusText: "OK",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
       },
     },
   },
