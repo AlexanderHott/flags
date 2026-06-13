@@ -3,6 +3,7 @@ import { assertProjectOwnership, protectedProcedure } from "./server";
 import * as schema from "#/db/schema";
 import z from "zod";
 import { ORPCError } from "@orpc/client";
+import { and, desc, eq, lt } from "drizzle-orm";
 
 export const create = protectedProcedure
   .input(
@@ -37,4 +38,29 @@ export const get = protectedProcedure
     const project = await assertProjectOwnership(userId, input.projectId);
 
     return project;
+  });
+
+export const list = protectedProcedure
+  .input(
+    z.object({
+      cursor: z.string().optional(),
+      limit: z.number().min(1).max(100).default(10),
+    }),
+  )
+  .handler(async ({ context, input }) => {
+    const rows = await db.query.projects.findMany({
+      where: input.cursor
+        ? and(eq(schema.projects.userId, context.userId), lt(schema.projects.id, input.cursor))
+        : eq(schema.projects.userId, context.userId),
+      limit: input.limit + 1,
+      orderBy: desc(schema.projects.createdAt),
+    });
+
+    const projects = rows.slice(0, input.limit);
+    const hasNextPage = rows.length > input.limit;
+
+    return {
+      projects,
+      nextId: hasNextPage ? projects.at(-1)?.id : null,
+    };
   });

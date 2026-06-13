@@ -4,7 +4,6 @@ import { FieldGroup, FieldLegend, FieldSet } from "#/components/ui/field";
 import { Checkbox } from "#/components/ui/checkbox";
 import { orpc } from "#/orpc/client";
 import {
-  infiniteQueryOptions,
   keepPreviousData,
   useMutation,
   useQueryClient,
