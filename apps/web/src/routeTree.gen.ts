@@ -14,7 +14,6 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiFlagRouteImport } from './routes/api.flag'
-import { Route as ApiSplatRouteImport } from './routes/api.$'
 import { Route as AppDashboardIndexRouteImport } from './routes/_app/dashboard.index'
 import { Route as ApiRpcSplatRouteImport } from './routes/api.rpc.$'
 import { Route as ApiOpenapiSplatRouteImport } from './routes/api.openapi.$'
@@ -43,11 +42,6 @@ const IndexRoute = IndexRouteImport.update({
 const ApiFlagRoute = ApiFlagRouteImport.update({
   id: '/api/flag',
   path: '/api/flag',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiSplatRoute = ApiSplatRouteImport.update({
-  id: '/api/$',
-  path: '/api/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppDashboardIndexRoute = AppDashboardIndexRouteImport.update({
@@ -81,7 +75,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/api/$': typeof ApiSplatRoute
   '/api/flag': typeof ApiFlagRoute
   '/api/openapi/$': typeof ApiOpenapiSplatRoute
   '/api/rpc/$': typeof ApiRpcSplatRoute
@@ -93,7 +86,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/api/$': typeof ApiSplatRoute
   '/api/flag': typeof ApiFlagRoute
   '/api/openapi/$': typeof ApiOpenapiSplatRoute
   '/api/rpc/$': typeof ApiRpcSplatRoute
@@ -107,7 +99,6 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/api/$': typeof ApiSplatRoute
   '/api/flag': typeof ApiFlagRoute
   '/api/openapi/$': typeof ApiOpenapiSplatRoute
   '/api/rpc/$': typeof ApiRpcSplatRoute
@@ -121,7 +112,6 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/signup'
-    | '/api/$'
     | '/api/flag'
     | '/api/openapi/$'
     | '/api/rpc/$'
@@ -133,7 +123,6 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/signup'
-    | '/api/$'
     | '/api/flag'
     | '/api/openapi/$'
     | '/api/rpc/$'
@@ -146,7 +135,6 @@ export interface FileRouteTypes {
     | '/_app'
     | '/login'
     | '/signup'
-    | '/api/$'
     | '/api/flag'
     | '/api/openapi/$'
     | '/api/rpc/$'
@@ -160,7 +148,6 @@ export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
-  ApiSplatRoute: typeof ApiSplatRoute
   ApiFlagRoute: typeof ApiFlagRoute
   ApiOpenapiSplatRoute: typeof ApiOpenapiSplatRoute
   ApiRpcSplatRoute: typeof ApiRpcSplatRoute
@@ -201,13 +188,6 @@ declare module '@tanstack/react-router' {
       path: '/api/flag'
       fullPath: '/api/flag'
       preLoaderRoute: typeof ApiFlagRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/$': {
-      id: '/api/$'
-      path: '/api/$'
-      fullPath: '/api/$'
-      preLoaderRoute: typeof ApiSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/dashboard/': {
@@ -267,7 +247,6 @@ const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
-  ApiSplatRoute: ApiSplatRoute,
   ApiFlagRoute: ApiFlagRoute,
   ApiOpenapiSplatRoute: ApiOpenapiSplatRoute,
   ApiRpcSplatRoute: ApiRpcSplatRoute,
